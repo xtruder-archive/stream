@@ -1,0 +1,36 @@
+[submodule "streamers/flumotion"]
+	path = streamers/flumotion
+	url = git://github.com/offlinehacker/flumotion.git
+[submodule "streamers/gstreamer/gst-plugins-good"]
+	path = streamers/gstreamer/gst-plugins-good
+	url = https://github.com/offlinehacker/gst-plugins-good.git
+[submodule "streamers/gstreamer/gst-plugins-bad"]
+	path = streamers/gstreamer/gst-plugins-bad
+	url = https://github.com/offlinehacker/gst-plugins-bad.git
+[submodule "streamers/ffmpeg/ffmpeg"]
+	path = streamers/ffmpeg/ffmpeg
+	url = git://git.videolan.org/ffmpeg
+[submodule "streamers/ffmpeg/libx264"]
+	path = streamers/ffmpeg/libx264
+	url = git://git.videolan.org/x264
+[submodule "streamers/gstreamer/gstreamer"]
+	path = streamers/gstreamer/gstreamer
+	url = git://anongit.freedesktop.org/gstreamer/gstreamer
+[submodule "streamers/gstreamer/gnonlin"]
+	path = streamers/gstreamer/gnonlin
+	url = https://github.com/offlinehacker/gnonlin.git
+[submodule "streamers/gstreamer/gst-plugins-base"]
+	path = streamers/gstreamer/gst-plugins-base
+	url = https://github.com/offlinehacker/gst-plugins-base.git
+[submodule "streamers/gstreamer/gst-plugins-ugly"]
+	path = streamers/gstreamer/gst-plugins-ugly
+	url = https://github.com/offlinehacker/gst-plugins-ugly.git
+[submodule "streamers/gstreamer/gst-python"]
+	path = streamers/gstreamer/gst-python
+	url = https://github.com/offlinehacker/gst-python.git
+[submodule "streamers/gstreamer/gst-ffmpeg"]
+	path = streamers/gstreamer/gst-ffmpeg
+	url = https://github.com/offlinehacker/gst-ffmpeg.git
+[submodule "streaming_servers/stream-m"]
+	path = streaming_servers/stream-m
+	url = git@github.com:offlinehacker/stream-m.git

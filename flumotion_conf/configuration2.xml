@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<planet name="planet">
+  
+  <atmosphere>
+    <component name="http-server-audio-video"
+               type="http-server"
+               label="http-server-audio-video"
+               worker="test2"
+               project="flumotion"
+               version="0.8.1">
+      <property name="porter-username">uJqRMOXzezPn</property>
+      <property name="mount-point">/webm-audio-video/html5/</property>
+      <property name="hostname">192.168.1.153</property>
+      <property name="porter-password">COkoNbclEasQ</property>
+      <property name="type">slave</property>
+      <property name="porter-socket-path">flu-TaLtZp.socket</property>
+      <property name="port">8800</property>
+      <plugs>
+        <plug type="component-html5">
+          <property name="width">640</property>
+          <property name="stream-url">http://192.168.1.153:8800/webm-audio-video/</property>
+          <property name="height">480</property>
+          <property name="mime-type">video/webm</property>
+          <property name="codecs">vorbis,vp8</property>
+        </plug>
+      </plugs>
+    </component>
+    
+    <component name="porter-http"
+               type="porter"
+               label="porter-http"
+               worker="test2"
+               project="flumotion"
+               version="0.8.1">
+      <property name="username">uJqRMOXzezPn</property>
+      <property name="socket-path">flu-TaLtZp.socket</property>
+      <property name="password">COkoNbclEasQ</property>
+      <property name="port">8800</property>
+    </component>
+    
+  </atmosphere>
+  
+  <flow name="default">
+    <component name="producer-audio"
+               type="soundcard-producer"
+               label="producer-audio"
+               worker="test"
+               project="flumotion"
+               version="0.8.1">
+      <property name="channels">2</property>
+      <property name="device">hw:0</property>
+      <property name="depth">16</property>
+      <property name="input-track">Mic Boost</property>
+      <property name="samplerate">48000</property>
+      <clock-master>true</clock-master>
+    </component>
+    
+    <component name="producer-video2"
+               type="webcam-producer"
+               label="producer-video2"
+               worker="test"
+               project="flumotion"
+               version="0.8.1">
+      <property name="format">YV12</property>
+      <property name="framerate">15/1</property>
+      <property name="height">232</property>
+      <property name="width">320</property>
+      <property name="mime">video/x-raw-yuv</property>
+      <property name="element-factory">v4l2src</property>
+      <property name="device">/dev/video1</property>
+      <clock-master>false</clock-master>
+    </component>
+    
+    <component name="producer-video"
+               type="webcam-producer"
+               label="producer-video"
+               worker="test"
+               project="flumotion"
+               version="0.8.1">
+      <property name="format">YV12</property>
+      <property name="framerate">15/1</property>
+      <property name="height">480</property>
+      <property name="width">640</property>
+      <property name="mime">video/x-raw-yuv</property>
+      <property name="element-factory">v4l2src</property>
+      <property name="device">/dev/video0</property>
+      <clock-master>false</clock-master>
+    </component>
+
+    <component name="resizer-video"
+               type="video-converter"
+               label="resizer-video"
+               worker="test"
+               project="flumotion"
+               version="0.8.1">
+      <eater name="default">
+        <feed alias="default">producer-video:default</feed>
+      </eater>
+      <property name="is-square">False</property>
+      <property name="width">320</property>
+      <property name="height">240</property>
+      <clock-master>false</clock-master>
+    </component>
+
+    <component name="resizer-video2"
+               type="video-converter"
+               label="resizer-video2"
+               worker="test"
+               project="flumotion"
+               version="0.8.1">
+      <eater name="default">
+        <feed alias="default">producer-video2:default</feed>
+      </eater>
+      <property name="is-square">False</property>
+      <property name="width">160</property>
+      <property name="height">116</property>
+      <clock-master>false</clock-master>
+    </component>
+    
+    <component name="dv_converter"
+               type="pipeline-converter"
+               label="pipeline-converter"
+               worker="test3"
+               project="flumotion"
+               version="0.8.1">
+      <eater name="default">
+        <feed alias="vid1">producer-video:default</feed>
+      </eater>
+      <property name="pipeline"> videoscale ! videorate !ffmpegcolorspace ! capsfilter caps="video/x-raw-yuv,format=(fourcc)Y41B" ! ffenc_dvvideo ! ffmux_dv</property>
+      <clock-master>false</clock-master>
+    </component>
+
+    <component name="dv_converter2"
+               type="pipeline-converter"
+               label="pipeline-converter2"
+               worker="test3"
+               project="flumotion"
+               version="0.8.1">
+      <eater name="default">
+        <feed alias="vid1">producer-video2:default</feed>
+      </eater>
+      <property name="pipeline"> videoscale ! videorate !ffmpegcolorspace ! capsfilter caps="video/x-raw-yuv,format=(fourcc)Y41B" ! ffenc_dvvideo ! ffmux_dv</property>
+      <clock-master>false</clock-master>
+    </component>
+    
+    <component name="encoder-audio"
+               type="vorbis-encoder"
+               label="encoder-audio"
+               worker="test2"
+               project="flumotion"
+               version="0.8.1">
+      <eater name="default">
+        <feed alias="default">producer-audio:default</feed>
+      </eater>
+      <property name="bitrate">64000</property>
+      <clock-master>false</clock-master>
+    </component>
+
+    <component name="encoder-video"
+               type="pipeline-converter"
+               label="encoder-video"
+               worker="test2"
+               project="flumotion"
+               version="0.8.1">
+      <eater name="default">
+        <feed alias="vid1">overlay-video:default</feed>
+      </eater>
+      <property name="pipeline"> ffmpegcolorspace ! vp8enc max-keyframe-distance=33 speed=2 threads=0 quality=10 name=encoder</property>
+      <clock-master>false</clock-master>
+    </component>
+    
+    <component name="muxer-audio-video"
+               type="webm-muxer"
+               label="muxer-audio-video"
+               worker="test2"
+               project="flumotion"
+               version="0.8.1">
+      <eater name="default">
+        <feed alias="default">encoder-audio:default</feed>
+        <feed alias="default-bis">encoder-video:default</feed>
+      </eater>
+      <clock-master>false</clock-master>
+    </component>
+    
+    <component name="http-audio-video"
+               type="http-streamer"
+               label="http-audio-video"
+               worker="test2"
+               project="flumotion"
+               version="0.8.1">
+      <eater name="default">
+        <feed alias="default">muxer-audio-video:default</feed>
+      </eater>
+      <property name="porter-username">uJqRMOXzezPn</property>
+      <property name="mount-point">/webm-audio-video/</property>
+      <property name="burst-on-connect">True</property>
+      <property name="type">slave</property>
+      <property name="porter-socket-path">flu-TaLtZp.socket</property>
+      <property name="port">8800</property>
+      <property name="porter-password">COkoNbclEasQ</property>
+      <clock-master>false</clock-master>
+      <plugs>
+      </plugs>
+    </component>
+    
+    <component name="composite-combiner"
+               type="composite-combiner"
+               label="composite-combiner"
+               worker="test2"
+               project="flumotion"
+               version="0.8.1">
+      <eater name="default">
+        <feed alias="vid1">resizer-video:default</feed>
+        <feed alias="vid2">resizer-video2:default</feed>
+      </eater>
+      <clock-master>false</clock-master>
+    </component>
+
+    <component name="overlay-video"
+               type="overlay-converter"
+               label="overlay-video"
+               worker="test2"
+               project="flumotion"
+               version="0.8.1">
+      <eater name="default">
+        <feed alias="default">composite-combiner:default</feed>
+      </eater>
+      <property name="show-text">True</property>
+      <property name="text">Flumotion</property>
+      <property name="cc-logo">True</property>
+      <property name="fluendo-logo">True</property>
+      <clock-master>false</clock-master>
+    </component>
+    
+    <component name="disk-consumer"
+               type="disk-consumer"
+               label="disk-consumer"
+               worker="test3"
+               project="flumotion"
+               version="0.8.1">
+      <eater name="default">
+        <feed alias="vid1">dv_converter:default</feed>
+      </eater>
+      <property name="directory">/home/offlinehacker</property>
+      <property name="filename">testlocalhosttest</property>
+      <clock-master>false</clock-master>
+      <plugs>
+      </plugs>
+    </component>
+
+    <component name="disk-consumer3"
+               type="disk-consumer"
+               label="disk-consumer3"
+               worker="test3"
+               project="flumotion"
+               version="0.8.1">
+      <eater name="default">
+        <feed alias="vid1">dv_converter2:default</feed>
+      </eater>
+      <property name="directory">/home/offlinehacker</property>
+      <property name="filename">localhosttest</property>
+      <clock-master>false</clock-master>
+      <plugs>
+      </plugs>
+    </component>
+
+
+    <component name="ogg-muxer"
+               type="ogg-muxer"
+               label="ogg-muxer"
+               worker="test3"
+               project="flumotion"
+               version="0.8.1">
+      <eater name="default">
+	<feed alias="vid1">encoder-audio:default</feed>
+      </eater>
+      <clock-master>false</clock-master>
+    </component>
+
+
+    <component name="disk-consumer2"
+               type="disk-consumer"
+               label="disk-consumer2"
+               worker="test3"
+               project="flumotion"
+               version="0.8.1">
+      <eater name="default">
+        <feed alias="vid1">ogg-muxer:default</feed>
+      </eater>
+      <property name="directory">/home/offlinehacker</property>
+      <property name="filename">testlocalhosttest</property>
+      <clock-master>false</clock-master>
+      <plugs>
+      </plugs>
+    </component>
+    
+  </flow>
+  
+</planet>
