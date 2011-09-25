@@ -8,5 +8,9 @@ function gstreamer {
     cd ../../
 }
 
+function ffmpeg {
+    git submodule update streamers/ffmpeg/*
+}
+
 echo $1
 $1
