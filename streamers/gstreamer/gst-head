@@ -28,8 +28,7 @@
 # This script is run -i so that PS1 doesn't get cleared
 
 # Change this variable to the location of your gstreamer git checkouts
-cd ..
-MYGST=$(pwd)/streamers/gstreamer
+MYGST=$(pwd)
 
 #
 # Everything below this line shouldn't be edited!
@@ -176,8 +175,7 @@ cd $GST
 shell=$SHELL
 if test "x$SHELL" = "x/bin/bash"
 then
-  # debian/ubuntu resets our PS1.  bastards.
-  shell="$SHELL --noprofile"
+    # debian/ubuntu resets our PS1.  bastards.
+    shell="$SHELL --noprofile"
 fi
 PS1="[gst-$VERSION] $PS1" $shell
-
