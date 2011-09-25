@@ -166,16 +166,15 @@ export PATH=$GST/gst-qa-system/bin:$PATH
 if test ! -z "$1";
 then
   $@
-  exit $?
+else
+    # set up prompt to help us remember we're in a subshell, cd to
+    # the gstreamer base dir and start $SHELL
+    cd $GST
+    shell=$SHELL
+    if test "x$SHELL" = "x/bin/bash"
+    then
+	# debian/ubuntu resets our PS1.  bastards.
+        shell="$SHELL --noprofile"
+    fi
+    PS1="[gst-$VERSION] $PS1" $shell
 fi
-
-# set up prompt to help us remember we're in a subshell, cd to
-# the gstreamer base dir and start $SHELL
-cd $GST
-shell=$SHELL
-if test "x$SHELL" = "x/bin/bash"
-then
-    # debian/ubuntu resets our PS1.  bastards.
-    shell="$SHELL --noprofile"
-fi
-PS1="[gst-$VERSION] $PS1" $shell
